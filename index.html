@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AçaíBom</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #e8eaf0; color: #1a1a2e; }
+
+  /* ─── HEADER ─── */
+  .header {
+    background: #1a1a2e;
+    color: white;
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .header-brand { font-size: 20px; font-weight: 700; }
+  .header-sub { font-size: 12px; color: #aaa; margin-top: 2px; }
+  .btn-sair {
+    background: #2d2d4e; color: white; border: none;
+    padding: 8px 16px; border-radius: 20px; cursor: pointer;
+    font-size: 13px;
+  }
+  .btn-sair:hover { background: #3d3d6e; }
+
+  /* ─── LAYOUT ─── */
+  .page { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+  .section-title { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
+
+  /* ─── LOGIN ─── */
+  .login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a2e;
+  }
+  .login-card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .login-logo { text-align: center; margin-bottom: 28px; }
+  .login-logo h1 { font-size: 28px; font-weight: 800; color: #1a1a2e; }
+  .login-logo p { color: #888; font-size: 13px; margin-top: 4px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #555; }
+  .form-group input {
+    width: 100%; padding: 10px 14px;
+    border: 1px solid #ddd; border-radius: 8px;
+    font-size: 14px; outline: none; transition: border .2s;
+  }
+  .form-group input:focus { border-color: #6200ea; }
+  .btn-primary {
+    width: 100%; background: #6200ea; color: white;
+    border: none; padding: 12px; border-radius: 8px;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: background .2s;
+  }
+  .btn-primary:hover { background: #5000c9; }
+  .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+  .login-hint { text-align: center; margin-top: 16px; font-size: 12px; color: #888; }
+  .error-msg { background: #ffeaea; color: #c00; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
+  .link-btn { color: #6200ea; font-weight: 700; cursor: pointer; font-size: 14px; text-decoration: underline; }
+  .link-btn:hover { color: #4500b0; }
+
+  /* ─── CARD ─── */
+  .card {
+    background: white; border-radius: 12px;
+    padding: 20px; margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+
+  /* ─── TELA CLIENTE ─── */
+  .tamanho-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  .tamanho-btn {
+    border: 2px solid #ddd; background: white; border-radius: 10px;
+    padding: 14px 10px; text-align: center; cursor: pointer; transition: all .2s;
+  }
+  .tamanho-btn:hover { border-color: #6200ea; }
+  .tamanho-btn.selected { border-color: #6200ea; background: #f0e6ff; }
+  .tamanho-btn .tam-nome { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .tamanho-btn .tam-preco { font-size: 12px; color: #6200ea; margin-top: 4px; }
+  .adicionais-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .adicional-chip {
+    border: 1px solid #ddd; border-radius: 20px;
+    padding: 6px 14px; font-size: 13px; cursor: pointer;
+    background: white; transition: all .15s;
+  }
+  .adicional-chip.selected { background: #6200ea; color: white; border-color: #6200ea; }
+  .total-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee;
+    margin-bottom: 16px;
+  }
+  .total-bar .label { font-size: 15px; font-weight: 600; }
+  .total-bar .valor { font-size: 22px; font-weight: 800; color: #1a1a2e; }
+  .btn-confirmar {
+    width: 100%; background: #6200ea; color: white;
+    border: none; padding: 16px; border-radius: 10px;
+    font-size: 16px; font-weight: 700; cursor: pointer; transition: background .2s;
+  }
+  .btn-confirmar:hover { background: #5000c9; }
+  .btn-confirmar:disabled { background: #bbb; cursor: not-allowed; }
+  .como-funciona { margin-top: 24px; }
+  .passo { background: #f5f5f5; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; font-size: 14px; color: #444; }
+
+  /* ─── TELA PREPARADORA ─── */
+  .pedido-card { border: 1px solid #eee; border-radius: 12px; padding: 18px; margin-bottom: 12px; background: white; }
+  .pedido-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .pedido-header h3 { font-size: 16px; font-weight: 700; }
+  .pedido-detalhes { font-size: 13px; color: #666; margin-bottom: 14px; }
+  .badge {
+    padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  }
+  .badge-aguardando { background: #e8eaf0; color: #555; }
+  .badge-em_preparo { background: #fff3cd; color: #856404; }
+  .badge-pronto { background: #d1e7dd; color: #0a5c36; }
+  .badge-em_rota { background: #cff4fc; color: #055160; }
+  .badge-entregue { background: #d1e7dd; color: #0a5c36; }
+  .badge-cancelado { background: #f8d7da; color: #842029; }
+  .btn-pronto {
+    width: 100%; background: #6200ea; color: white; border: none;
+    padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+  .estoque-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .estoque-item {
+    border-radius: 8px; padding: 14px;
+    border: 1px solid #eee; background: white;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .estoque-item.baixo { background: #fff5f5; border-color: #ffcccc; }
+  .estoque-item.ok { background: #f0fff4; border-color: #c3e6cb; }
+  .estoque-nome { font-weight: 700; font-size: 14px; }
+  .estoque-qty { font-size: 12px; color: #888; margin-top: 2px; }
+  .badge-baixo { background: #ffcccc; color: #c00; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .badge-ok { background: #c3e6cb; color: #0a5c36; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+
+  /* ─── TELA DONO ─── */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat-card { background: white; border-radius: 12px; padding: 18px; border: 1px solid #eee; }
+  .stat-label { font-size: 12px; color: #888; margin-bottom: 8px; }
+  .stat-value { font-size: 26px; font-weight: 800; color: #1a1a2e; }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: #1a1a2e; color: white; }
+  th { padding: 12px 14px; text-align: left; font-size: 13px; font-weight: 600; }
+  td { padding: 12px 14px; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+  tr:last-child td { border-bottom: none; }
+  .produtos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
+  .produto-card {
+    border-radius: 10px; padding: 16px; border: 2px solid #eee; background: white;
+  }
+  .produto-card.top { border-color: #6200ea; background: #f0e6ff; }
+  .produto-card .p-nome { font-size: 15px; font-weight: 700; }
+  .produto-card .p-info { font-size: 12px; color: #6200ea; margin-top: 4px; }
+  .chart-wrap { background: white; border-radius: 12px; padding: 20px; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-top: 30px; }
+  .chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .chart-bar {
+    width: 100%; background: #c9b3f5; border-radius: 4px 4px 0 0;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 4px; font-size: 10px; font-weight: 700; color: #5000c9;
+    transition: height .4s ease;
+  }
+  .chart-bar.atual { background: #6200ea; }
+  .chart-day { font-size: 11px; color: #888; margin-top: 6px; }
+  .btn-period {
+    padding: 6px 14px; border: 1px solid #ddd; background: white; border-radius: 6px;
+    font-size: 13px; cursor: pointer; margin-left: 6px;
+  }
+  .btn-period.active { background: #6200ea; color: white; border-color: #6200ea; }
+  .period-row { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+
+  /* ─── LOADING ─── */
+  .loading { text-align: center; padding: 40px; color: #888; font-size: 14px; }
+  .spinner { width: 32px; height: 32px; border: 3px solid #eee; border-top-color: #6200ea; border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #1a1a2e; color: white; padding: 12px 24px; border-radius: 24px;
+    font-size: 14px; z-index: 9999; animation: fadeup .3s ease;
+  }
+  @keyframes fadeup { from { opacity:0; transform: translateX(-50%) translateY(10px); } }
+
+  /* ─── MODAL ─── */
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+  }
+  .modal {
+    background: white; border-radius: 16px; padding: 28px;
+    width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  }
+  .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .btn-cancel {
+    flex: 1; background: #eee; border: none; padding: 12px; border-radius: 8px;
+    font-size: 14px; cursor: pointer; font-weight: 600;
+  }
+
+  @media (max-width: 600px) {
+    .tamanho-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .produtos-grid { grid-template-columns: 1fr; }
+    .estoque-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const API_URL = "https://rootsacai.onrender.com";
+
+// ─── API helper ───────────────────────────────────────────
+async function api(path, method = 'GET', body = null, token = null) {
+  const headers = { 'Content-Type': 'application/json' };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(API_URL + path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined
+  });
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
+  const text = await res.text();
+
+  return text ? JSON.parse(text) : null;
+}
+
+// ─── Mock data (para demo sem backend) ───────────────────
+const MOCK = {
+  pedidos: [
+    { id: 1, clienteNome: 'João Costa', tamanho: '500ml', status: 'em_preparo', total: 17.99, data: new Date().toISOString() },
+    { id: 2, clienteNome: 'Ana Lima', tamanho: '300ml', status: 'aguardando', total: 10.00, data: new Date().toISOString() },
+    { id: 3, clienteNome: 'Pedro Souza', tamanho: '1L', status: 'aguardando', total: 27.00, data: new Date().toISOString() },
+    { id: 4, clienteNome: 'Carol Dias', tamanho: '700ml', status: 'em_rota', total: 18.00, data: new Date().toISOString() },
+    { id: 5, clienteNome: 'Lucas Melo', tamanho: '300ml', status: 'aguardando', total: 10.00, data: new Date().toISOString() },
+  ],
+  estoque: [
+    { id: 1, nomeProduto: 'Morango (kg)', quantidade: 2, alertaMinimo: 5, situacao: 'BAIXO' },
+    { id: 2, nomeProduto: 'Granola (kg)', quantidade: 20, alertaMinimo: 5, situacao: 'OK' },
+    { id: 3, nomeProduto: 'Leite condensado', quantidade: 30, alertaMinimo: 5, situacao: 'OK' },
+    { id: 4, nomeProduto: 'Nutella (pote)', quantidade: 3, alertaMinimo: 3, situacao: 'BAIXO' },
+    { id: 5, nomeProduto: 'Ovomaltine', quantidade: 8, alertaMinimo: 3, situacao: 'OK' },
+    { id: 6, nomeProduto: 'Kit Kat (un)', quantidade: 40, alertaMinimo: 5, situacao: 'OK' },
+  ],
+  dashboard: { totalPedidos: 27, pedidosHoje: 5, estoquesBaixos: 2, totalClientes: 3, faturamentoHoje: 342, ticketMedio: 12.67 },
+  faturamento: [280, 320, 410, 295, 500, 380, 342],
+};
+
+// ─── Toast ─────────────────────────────────────────────────
+function Toast({ msg }) {
+  return msg ? <div className="toast">{msg}</div> : null;
+}
+
+// ─── Loading ───────────────────────────────────────────────
+function Loading() {
+  return <div className="loading"><div className="spinner"/><p>Carregando...</p></div>;
+}
+
+// ─── AUTH PAGES (Login / Cadastro / Esqueci Senha) ─────────
+function LoginPage({ onLogin }) {
+  // tela: 'login' | 'cadastro' | 'esqueci' | 'sucesso'
+  const [tela, setTela] = React.useState('login');
+
+  // ── campos login
+  const [login, setLogin] = React.useState('');
+  const [senha, setSenha] = React.useState('');
+
+  // ── campos cadastro
+  const [cNome, setCNome]       = React.useState('');
+  const [cLogin, setCLogin]     = React.useState('');
+  const [cSenha, setCSenha]     = React.useState('');
+  const [cConfirm, setCConfirm] = React.useState('');
+  const [cPerfil, setCPerfil]   = React.useState('Cliente');
+  const [cTelefone, setCTelefone] = React.useState('');
+  const [cEndereco, setCEndereco] = React.useState('');
+  const [showSenha, setShowSenha] = React.useState(false);
+
+  // ── campos esqueci senha
+  const [eLogin, setELogin] = React.useState('');
+  const [eNovaSenha, setENovaSenha] = React.useState('');
+  const [eConfirm, setEConfirm] = React.useState('');
+
+  const [loading, setLoading] = React.useState(false);
+  const [erro, setErro]       = React.useState('');
+  const [sucesso, setSucesso] = React.useState('');
+
+  // Usuários demo em memória (simulam banco)
+  const [demoUsers, setDemoUsers] = React.useState([
+    { nome: 'Administrador', login: 'admin',   senha: 'admin123', perfil: 'Administrador', id: 1 },
+    { nome: 'Maria Silva',   login: 'maria',   senha: 'maria456', perfil: 'Cliente',       id: 2 },
+    { nome: 'Leticia Lima',  login: 'leticia', senha: 'leti789',  perfil: 'Preparador',    id: 3 },
+    { nome: 'Carlos Moto',   login: 'carlos',  senha: 'moto321',  perfil: 'Motoboy',       id: 4 },
+  ]);
+
+  function reset() { setErro(''); setSucesso(''); }
+
+  // ─── LOGIN ───────────────────────────────────────────────
+  async function handleLogin() {
+    if (!login || !senha) { setErro('Preencha login e senha'); return; }
+    setLoading(true); reset();
+    try {
+  const data = await api('/auth/login', 'POST', {
+  email: login,
+  senha
+});
+
+localStorage.setItem(
+  'auth',
+  JSON.stringify({
+    token: data.token,
+    nome: data.nome,
+    perfil: data.perfil,
+    id: data.id
+  })
+);
+
+onLogin({
+  token: data.token,
+  nome: data.nome,
+  perfil: data.perfil,
+  id: data.id
+});
+
+} catch (e) {
+  console.error("ERRO LOGIN:", e);
+
+  const u = demoUsers.find(x => x.login === login && x.senha === senha);
+
+  if (u) {
+    onLogin({
+      token: 'demo-token',
+      nome: u.nome,
+      perfil: u.perfil,
+      id: u.id
+    });
+  } else {
+    setErro('Login ou senha incorretos.');
+  }
+}
+  }
+
+  // ─── CADASTRO ────────────────────────────────────────────
+  async function handleCadastro() {
+    reset();
+    if (!cNome || !cLogin || !cSenha || !cConfirm) { setErro('Preencha todos os campos obrigatórios.'); return; }
+    if (cSenha.length < 4) { setErro('A senha deve ter pelo menos 4 caracteres.'); return; }
+    if (cSenha !== cConfirm) { setErro('As senhas não coincidem.'); return; }
+    if (demoUsers.find(u => u.login === cLogin)) { setErro('Este login já está em uso.'); return; }
+    if (cPerfil === 'Cliente' && (!cTelefone || !cEndereco)) { setErro('Para clientes, preencha telefone e endereço.'); return; }
+
+    setLoading(true);
+    try {
+      // Tenta API real
+      await api('/usuarios', 'POST', {
+  nome: cNome,
+  email: cLogin,
+  senha: cSenha,
+  perfilId: { Cliente:2, Preparador:3, Motoboy:4, Administrador:1 }[cPerfil],
+  ativo: true
+}); 
+    } catch {
+      // Fallback demo: salva localmente
+      const newId = demoUsers.length + 1;
+      setDemoUsers(prev => [...prev, { nome: cNome, login: cLogin, senha: cSenha, perfil: cPerfil, id: newId }]);
+    }
+    setSucesso(`Conta de ${cNome} criada com sucesso! Faça login para continuar.`);
+    setTela('sucesso');
+    setLoading(false);
+  }
+
+  // ─── ESQUECI SENHA ───────────────────────────────────────
+  async function handleEsqueci() {
+    reset();
+    if (!eLogin) { setErro('Informe seu login.'); return; }
+    if (!eNovaSenha || !eConfirm) { setErro('Preencha a nova senha e confirmação.'); return; }
+    if (eNovaSenha.length < 4) { setErro('A senha deve ter pelo menos 4 caracteres.'); return; }
+    if (eNovaSenha !== eConfirm) { setErro('As senhas não coincidem.'); return; }
+
+    const existe = demoUsers.find(u => u.login === eLogin);
+    if (!existe) { setErro('Login não encontrado.'); return; }
+
+    setLoading(true);
+    try {
+      await api(`/usuarios/${existe.id}/senha`, 'PATCH', { senhaNova: eNovaSenha });
+    } catch {
+      setDemoUsers(prev => prev.map(u => u.login === eLogin ? { ...u, senha: eNovaSenha } : u));
+    }
+    setSucesso('Senha alterada com sucesso!');
+    setTela('sucesso');
+    setLoading(false);
+  }
+
+  const PERFIS = ['Cliente', 'Preparador', 'Motoboy', 'Administrador'];
+
+  // ── Tela de sucesso ──────────────────────────────────────
+  if (tela === 'sucesso') return (
+    <div className="login-wrap">
+      <div className="login-card" style={{textAlign:'center'}}>
+        <div style={{fontSize:52, marginBottom:12}}>✅</div>
+        <h2 style={{fontWeight:800, marginBottom:8}}>Tudo certo!</h2>
+        <p style={{color:'#555', fontSize:14, marginBottom:24}}>{sucesso}</p>
+        <button className="btn-primary" onClick={() => { setTela('login'); reset(); setSucesso(''); }}>
+          Ir para o Login
+        </button>
+      </div>
+    </div>
+  );
+
+  // ── Tela de esqueci senha ────────────────────────────────
+  if (tela === 'esqueci') return (
+    <div className="login-wrap">
+      <div className="login-card">
+        <div className="login-logo">
+          <div style={{fontSize:32}}>🔑</div>
+          <h1 style={{fontSize:22}}>Recuperar Senha</h1>
+          <p>Informe seu login e defina uma nova senha</p>
+        </div>
+        {erro && <div className="error-msg">{erro}</div>}
+        <div className="form-group">
+          <label>Login</label>
+          <input value={eLogin} onChange={e => setELogin(e.target.value)} placeholder="Seu login" />
+        </div>
+        <div className="form-group">
+          <label>Nova Senha</label>
+          <input type="password" value={eNovaSenha} onChange={e => setENovaSenha(e.target.value)} placeholder="Mínimo 4 caracteres" />
+        </div>
+        <div className="form-group">
+          <label>Confirmar Nova Senha</label>
+          <input type="password" value={eConfirm} onChange={e => setEConfirm(e.target.value)}
+            placeholder="Repita a senha" onKeyDown={e => e.key === 'Enter' && handleEsqueci()} />
+        </div>
+        <button className="btn-primary" onClick={handleEsqueci} disabled={loading}>
+          {loading ? 'Salvando...' : 'Alterar Senha'}
+        </button>
+        <div style={{textAlign:'center', marginTop:16}}>
+          <span className="link-btn" onClick={() => { setTela('login'); reset(); }}>← Voltar ao Login</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── Tela de cadastro ────────────────────────────────────
+  if (tela === 'cadastro') return (
+    <div className="login-wrap" style={{padding:'20px 0'}}>
+      <div className="login-card" style={{maxWidth:420}}>
+        <div className="login-logo">
+          <div style={{fontSize:32}}>🍇</div>
+          <h1 style={{fontSize:22}}>Criar Conta</h1>
+          <p>Preencha seus dados para se cadastrar</p>
+        </div>
+        {erro && <div className="error-msg">{erro}</div>}
+
+        <div className="form-group">
+          <label>Nome completo <span style={{color:'#c00'}}>*</span></label>
+          <input value={cNome} onChange={e => setCNome(e.target.value)} placeholder="Ex: João Costa" />
+        </div>
+        <div className="form-group">
+          <label>Login (usuário) <span style={{color:'#c00'}}>*</span></label>
+          <input value={cLogin} onChange={e => setCLogin(e.target.value.toLowerCase().replace(/\s/g,''))} placeholder="Ex: joaocosta" />
+        </div>
+        <div className="form-group">
+          <label>Perfil <span style={{color:'#c00'}}>*</span></label>
+          <select value={cPerfil} onChange={e => setCPerfil(e.target.value)}
+            style={{width:'100%',padding:'10px 14px',border:'1px solid #ddd',borderRadius:8,fontSize:14,outline:'none',background:'white'}}>
+            {PERFIS.map(p => <option key={p}>{p}</option>)}
+          </select>
+        </div>
+
+        {cPerfil === 'Cliente' && <>
+          <div className="form-group">
+            <label>Telefone <span style={{color:'#c00'}}>*</span></label>
+            <input value={cTelefone} onChange={e => setCTelefone(e.target.value)} placeholder="(61) 99999-9999" />
+          </div>
+          <div className="form-group">
+            <label>Endereço <span style={{color:'#c00'}}>*</span></label>
+            <input value={cEndereco} onChange={e => setCEndereco(e.target.value)} placeholder="Rua, número, bairro" />
+          </div>
+        </>}
+
+        <div className="form-group">
+          <label>Senha <span style={{color:'#c00'}}>*</span></label>
+          <div style={{position:'relative'}}>
+            <input type={showSenha ? 'text' : 'password'} value={cSenha}
+              onChange={e => setCSenha(e.target.value)} placeholder="Mínimo 4 caracteres"
+              style={{width:'100%',padding:'10px 14px',border:'1px solid #ddd',borderRadius:8,fontSize:14,outline:'none'}} />
+            <span onClick={() => setShowSenha(v => !v)}
+              style={{position:'absolute',right:12,top:'50%',transform:'translateY(-50%)',cursor:'pointer',fontSize:16,color:'#888'}}>
+              {showSenha ? '🙈' : '👁️'}
+            </span>
+          </div>
+        </div>
+        <div className="form-group">
+          <label>Confirmar Senha <span style={{color:'#c00'}}>*</span></label>
+          <input type="password" value={cConfirm} onChange={e => setCConfirm(e.target.value)}
+            placeholder="Repita a senha" onKeyDown={e => e.key === 'Enter' && handleCadastro()} />
+          {cConfirm && cSenha !== cConfirm &&
+            <span style={{fontSize:12, color:'#c00', marginTop:4, display:'block'}}>As senhas não coincidem</span>}
+          {cConfirm && cSenha === cConfirm && cConfirm.length > 0 &&
+            <span style={{fontSize:12, color:'green', marginTop:4, display:'block'}}>✓ Senhas coincidem</span>}
+        </div>
+
+        <button className="btn-primary" onClick={handleCadastro} disabled={loading}>
+          {loading ? 'Cadastrando...' : 'Criar Conta'}
+        </button>
+        <div style={{textAlign:'center', marginTop:16}}>
+          Já tem conta?{' '}
+          <span className="link-btn" onClick={() => { setTela('login'); reset(); }}>Fazer login</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── Tela de login ────────────────────────────────────────
+  return (
+    <div className="login-wrap">
+      <div className="login-card">
+        <div className="login-logo">
+          <h1>🍇 AçaíBom</h1>
+          <p>Sistema de Gestão · Turma 3AM</p>
+        </div>
+        {erro && <div className="error-msg">{erro}</div>}
+        <div className="form-group">
+          <label>Login</label>
+          <input value={login} onChange={e => setLogin(e.target.value)}
+            placeholder="ex: admin" onKeyDown={e => e.key === 'Enter' && handleLogin()} />
+        </div>
+        <div className="form-group" style={{marginBottom:6}}>
+          <label>Senha</label>
+          <input type="password" value={senha} onChange={e => setSenha(e.target.value)}
+            placeholder="••••••" onKeyDown={e => e.key === 'Enter' && handleLogin()} />
+        </div>
+        <div style={{textAlign:'right', marginBottom:16}}>
+          <span className="link-btn" onClick={() => { setTela('esqueci'); reset(); }}>
+            Esqueci minha senha
+          </span>
+        </div>
+        <button className="btn-primary" onClick={handleLogin} disabled={loading}>
+          {loading ? 'Entrando...' : 'Entrar'}
+        </button>
+        <div style={{textAlign:'center', marginTop:20, fontSize:14, color:'#555'}}>
+          Não tem conta?{' '}
+          <span className="link-btn" onClick={() => { setTela('cadastro'); reset(); }}>
+            Cadastre-se
+          </span>
+        </div>
+        <div className="login-hint" style={{marginTop:12}}>
+          Teste: admin/admin123 · maria/maria456
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── TELA CLIENTE ──────────────────────────────────────────
+function TelaCliente({ user, token, onLogout, showToast }) {
+
+  const [tamanhos, setTamanhos] = React.useState([]);
+  const [tamanho, setTamanho] = React.useState(null);  
+  const [adicionais, setAdicionais] = React.useState([]);
+  const [enviando, setEnviando] = React.useState(false);
+
+  React.useEffect(() => {
+  fetch('https://rootsacai.onrender.com/produtos')
+    .then(res => {
+      console.log("STATUS:", res.status);
+      return res.json();
+    })
+    .then(data => {
+      console.log("PRODUTOS:", data);
+
+      setTamanhos(data);
+
+      if (data.length > 0) {
+        setTamanho(data[0]);
+      }
+    })
+    .catch(err => {
+      console.error("ERRO FETCH:", err);
+    });
+}, []);
+
+if (!tamanho) {
+  return <div>Nenhum produto cadastrado</div>;
+}
+  const ADICIONAIS = [
+    { nome: 'Granola',            preco: 2.00 },
+    { nome: 'Leite condensado',   preco: 3.00 },
+    { nome: 'Leite em pó',        preco: 2.00 },
+    { nome: 'Paçoca',             preco: 1.50 },
+    { nome: 'Morango +R$2,99',    preco: 2.99 },
+    { nome: 'Nutella +R$3,99',    preco: 3.99 },
+    { nome: 'Ovomaltine +R$2,99', preco: 2.99 },
+    { nome: 'Kit Kat +R$3,99',    preco: 3.99 },
+  ];
+  
+  function toggleAdicional(a) {
+    setAdicionais(prev =>
+      prev.find(x => x.nome === a.nome) ? prev.filter(x => x.nome !== a.nome) : [...prev, a]
+    );
+  }
+
+  const total = (tamanho?.preco || 0) +
+  adicionais.reduce((s, a) => s + a.preco, 0);
+
+  async function confirmar() {
+
+  console.log("USER =", user);
+  console.log("TAMANHO =", tamanho);
+
+  setEnviando(true);
+
+  try {
+
+    await api('/pedidos', 'POST', {
+      tamanho: tamanho.nome,
+      total: tamanho.preco,
+      clienteId: user.id,
+      clienteNome: user.nome,
+      clienteTel: user.telefone
+    }, token);
+
+    showToast('✅ Pedido confirmado!');
+
+  } catch (e) {
+    console.error("ERRO =", e);
+  }
+
+  setEnviando(false);
+}
+
+  return (
+    <>
+      <div className="header">
+        <div>
+          <div className="header-brand">🍇 AcaiBom</div>
+          <div className="header-sub">Olá, {user.nome}</div>
+        </div>
+        <button className="btn-sair" onClick={onLogout}>Sair</button>
+      </div>
+      <div className="page">
+        <div className="card">
+          <div className="section-title">Fazer Pedido</div>
+          <label style={{fontWeight:700, fontSize:14, display:'block', marginBottom:10}}>Escolha o tamanho:</label>
+          <div className="tamanho-grid">
+            {tamanhos.map(t => (
+              <div key={t.nome} className={`tamanho-btn ${tamanho?.nome === t.nome ? 'selected' : ''}`}
+                onClick={() => setTamanho(t)}>
+                <div className="tam-nome">{t.nome}</div>
+                <div className="tam-preco">R$ {t.preco.toFixed(2)}</div>
+              </div>
+            ))}
+          </div>
+
+          <label style={{fontWeight:700, fontSize:14, display:'block', marginBottom:10}}>Adicionais:</label>
+          <div className="adicionais-wrap">
+            {ADICIONAIS.map(a => (
+              <span key={a.nome}
+                className={`adicional-chip ${adicionais.find(x=>x.nome===a.nome)?'selected':''}`}
+                onClick={() => toggleAdicional(a)}>
+                {a.nome}
+              </span>
+            ))}
+          </div>
+
+          <div className="total-bar">
+            <span className="label">Total estimado:</span>
+            <span className="valor">R$ {total.toFixed(2)}</span>
+          </div>
+
+          <button className="btn-confirmar" onClick={confirmar} disabled={enviando}>
+            {enviando ? 'Enviando...' : 'Confirmar Pedido'}
+          </button>
+        </div>
+
+        <div className="card como-funciona">
+          <div style={{fontWeight:700, fontSize:16, marginBottom:12}}>Como funciona:</div>
+          {['1. Escolha o tamanho do copo','2. Selecione os adicionais desejados',
+            '3. Clique em Confirmar Pedido','4. Acompanhe o status do pedido'].map(p => (
+            <div className="passo" key={p}>{p}</div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── TELA PREPARADORA ──────────────────────────────────────
+function TelaPreparadora({ user, token, onLogout, showToast }) {
+  const [pedidos, setPedidos] = React.useState([]);
+  const [estoque, setEstoque] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  async function carregar() {
+  try {
+    const p = await api('/pedidos', 'GET', null, token);
+
+    console.log("PEDIDOS:", p);
+
+    setPedidos(p);
+    setEstoque([]);
+
+  } catch (e) {
+    console.error(e);
+    setPedidos(MOCK.pedidos);
+    setEstoque(MOCK.estoque);
+  }
+
+  setLoading(false);
+}
+
+  React.useEffect(() => {
+  carregar();
+
+  const intervalo = setInterval(() => {
+    carregar();
+  }, 5000);
+
+  return () => clearInterval(intervalo);
+
+}, []);
+
+  async function avancarStatus(id, statusAtual) {
+    const next = { aguardando: 'em_preparo', em_preparo: 'pronto', pronto: 'em_rota' };
+    const novoStatus = next[statusAtual];
+    if (!novoStatus) return;
+    try {
+      await api(`/pedidos/${id}/status?status=${novoStatus}`, 'PATCH', null, token);
+      showToast('✅ Status atualizado!');
+    } catch {
+      showToast('✅ Status atualizado! (demo)');
+    }
+    setPedidos(prev => prev.map(p => p.id === id ? { ...p, status: novoStatus } : p));
+  }
+
+  const btnLabel = { aguardando: 'Iniciar preparo', em_preparo: 'Marcar como pronto', pronto: 'Enviar para entrega' };
+  const pendentes = pedidos.filter(p => ['aguardando','em_preparo','pronto'].includes(p.status)).length;
+
+  if (loading) return <><div className="header"><div><div className="header-brand">🍇 AcaiBom</div></div></div><Loading/></>;
+
+  return (
+    <>
+      <div className="header">
+        <div>
+          <div className="header-brand">Pedidos do Dia</div>
+          <div className="header-sub">Preparadora: {user.nome}</div>
+        </div>
+        <div style={{display:'flex',gap:10,alignItems:'center'}}>
+          <span style={{background:'#e8c740',color:'#333',padding:'6px 14px',borderRadius:20,fontSize:12,fontWeight:700}}>
+            {pendentes} pendentes
+          </span>
+          <button className="btn-sair" onClick={onLogout}>Sair</button>
+        </div>
+      </div>
+      <div className="page">
+        <div className="section-title">Fila de Producao</div>
+        {pedidos.filter(p =>['aguardando','em_preparo','pronto'].includes(p.status)).map(p => (
+          <div className="pedido-card" key={p.id}>
+            <div className="pedido-header">
+              <h3>#{String(p.id).padStart(3,'0')} - {p.clienteNome}</h3>
+              <span className={`badge badge-${p.status}`}>
+                {p.status.replace('_',' ').replace(/\b\w/g,c=>c.toUpperCase())}
+              </span>
+            </div>
+            <div className="pedido-detalhes">{p.tamanho} · R$ {Number(p.total).toFixed(2)}</div>
+            {btnLabel[p.status] && (
+              <button className="btn-pronto" onClick={() => avancarStatus(p.id, p.status)}>
+                {btnLabel[p.status]}
+              </button>
+            )}
+          </div>
+        ))}
+
+        <div className="section-title" style={{marginTop:24}}>Alerta de Estoque</div>
+        <div className="estoque-grid">
+          {estoque.map(e => (
+            <div className={`estoque-item ${e.situacao === 'BAIXO' ? 'baixo' : 'ok'}`} key={e.id}>
+              <div>
+                <div className="estoque-nome">{e.nomeProduto}</div>
+                <div className="estoque-qty">
+                  {e.situacao === 'BAIXO' ? `Restam ${e.quantidade} un` : 'Estoque OK'}
+                </div>
+              </div>
+              <span className={e.situacao === 'BAIXO' ? 'badge-baixo' : 'badge-ok'}>{e.situacao}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ─── TELA DONO / DASHBOARD ─────────────────────────────────
+function TelaDono({ user, token, onLogout, showToast }) {
+
+console.log("ENTROU NA TELA DONO");
+
+const [dash, setDash] = React.useState(null);
+const [pedidos, setPedidos] = React.useState([]);
+const [periodo, setPeriodo] = React.useState('Dia');
+const [produtos, setProdutos] = React.useState([]);
+const [nomeProduto, setNomeProduto] = React.useState('');
+const [precoProduto, setPrecoProduto] = React.useState('');
+
+const DIAS = ['Seg','Ter','Qua','Qui','Sex','Sab','Dom'];
+
+async function carregar() {
+
+try {
+
+  const p = await api('/pedidos', 'GET', null, token);
+  const produtosApi = await api('/produtos', 'GET', null, token);
+
+  console.log("PEDIDOS API:", p);
+    console.log("PRODUTOS API:", produtosApi);
+
+    setDash(MOCK.dashboard);
+    setPedidos(p);
+    setProdutos(produtosApi);
+
+  } catch (e) {
+
+    console.error(e);
+
+    setDash(MOCK.dashboard);
+    setPedidos(MOCK.pedidos);
+
+  }
+
+}
+
+async function cadastrarProduto() {
+
+if (!nomeProduto || !precoProduto) {
+  showToast('Preencha nome e preço');
+  return;
+}
+
+await api('/produtos', 'POST', {
+  nome: nomeProduto,
+  preco: Number(precoProduto)
+}, token);
+
+showToast('✅ Produto cadastrado');
+
+setNomeProduto('');
+setPrecoProduto('');
+
+carregar();
+
+}
+
+async function excluirProduto(id) {
+
+await api(`/produtos/${id}`, 'DELETE', null, token);
+
+showToast('🗑 Produto removido');
+
+carregar();
+
+}
+
+React.useEffect(() => {
+carregar();
+}, []);
+
+console.log("DASH =", dash);
+console.log("PEDIDOS =", pedidos);
+
+if (!dash) return <Loading />;
+
+const fatur = MOCK.faturamento;
+const maxF = Math.max(...fatur);
+const faturamentoReal = pedidos
+  .filter(p => p.status === 'entregue')
+  .reduce((soma, p) => soma + Number(p.total), 0);
+
+const ticketMedioReal =
+  faturamentoReal > 0
+    ? faturamentoReal / pedidos.filter(p => p.status === 'entregue').length
+    : 0;
+
+const tamanhosMock = [
+{ nome: 'Acai 300ml', pedidos: 14, pct: 52, top: true },
+{ nome: 'Acai 500ml', pedidos: 9, pct: 33, top: false },
+{ nome: 'Acai 700ml', pedidos: 4, pct: 15, top: false }
+];
+
+const statusColor = {
+aguardando: '#aab',
+em_preparo: '#f0a500',
+pronto: '#198754',
+em_rota: '#0dcaf0',
+entregue: '#198754',
+cancelado: '#dc3545'
+};
+
+console.log("produtos =", produtos);
+
+return (
+    <>
+      <div className="header">
+        <div>
+          <div className="header-brand">Dashboard Financeiro</div>
+          <div className="header-sub">AcaiBom · Administrador</div>
+        </div>
+        <div style={{display:'flex',gap:6,alignItems:'center'}}>
+          {['Dia','Mes','Ano'].map(p => (
+            <button key={p} className={`btn-period ${periodo===p?'active':''}`} onClick={()=>setPeriodo(p)}>{p}</button>
+          ))}
+          <button className="btn-sair" onClick={onLogout} style={{marginLeft:8}}>Sair</button>
+        </div>
+      </div>
+      <div className="page">
+        <div className="section-title">Resumo do Dia</div>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-label">Faturamento Real</div>
+            <div className="stat-value">
+                  R$ {faturamentoReal.toFixed(2)}
+            </div>
+            </div>
+          <div className="stat-card">
+          <div className="stat-label">Pedidos entregues</div>
+          <div className="stat-value">
+          {pedidos.filter(p => p.status === 'entregue').length}
+          </div>
+          </div>
+          <div className="stat-card">
+           <div className="stat-label">Ticket médio</div>
+            <div className="stat-value">
+            R$ {ticketMedioReal.toFixed(2)}
+            </div>
+            </div>
+        </div>
+
+        <div className="section-title">Últimos Pedidos</div>
+        <div className="card" style={{padding:0,overflow:'hidden'}}>
+          <table>
+            <thead>
+            <tr>
+            <th>#</th>
+            <th>Data</th>
+            <th>Tamanho</th>
+            <th>Status</th>
+            <th>Valor</th>
+            </tr>
+            </thead>
+            <tbody>
+              {pedidos
+              .filter(p => p.status === 'entregue')
+              .map(p => (
+                <tr key={p.id}>
+                  <td style={{fontWeight:700}}>{String(p.id).padStart(3,'0')}</td>
+                  <td>
+                  {new Date(p.criadoEm).toLocaleString('pt-BR')}
+                  </td>
+                  <td>{p.tamanho}</td>
+                  <td>
+                    <span style={{
+                      background: statusColor[p.status]+'22',
+                      color: statusColor[p.status],
+                      padding:'3px 10px', borderRadius:12, fontSize:12, fontWeight:700
+                    }}>
+                      {p.status.replace('_',' ').replace(/\b\w/g,c=>c.toUpperCase())}
+                    </span>
+                  </td>
+                  <td>R$ {Number(p.total).toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="section-title" style={{marginTop:24}}>Produto mais vendido</div>
+        <div className="produtos-grid">
+          {tamanhosMock.map(t => (
+            <div className={`produto-card ${t.top?'top':''}`} key={t.nome}>
+              <div className="p-nome">{t.nome}</div>
+              <div className="p-info">{t.pedidos} pedidos - {t.pct}%</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="section-title">Faturamento dos últimos 7 dias</div>
+    <div className="chart-wrap">
+      <div className="chart-bars">
+        {fatur.map((v, i) => (
+          <div className="chart-bar-col" key={i}>
+            <div
+              className={`chart-bar ${i === fatur.length-1 ? 'atual' : ''}`}
+              style={{ height: Math.max(20, (v / maxF) * 130) + 'px' }}
+            >
+              R${v}
+            </div>
+            <div className="chart-day">{DIAS[i]}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div className="section-title" style={{marginTop:24}}>
+      Gerenciar Produtos
+    </div>
+
+    <div className="card">
+
+      <input
+        type="text"
+        placeholder="Nome do produto"
+        value={nomeProduto}
+        onChange={e => setNomeProduto(e.target.value)}
+      />
+
+      <input
+        type="number"
+        step="0.01"
+        placeholder="Preço"
+        value={precoProduto}
+        onChange={e => setPrecoProduto(e.target.value)}
+      />
+
+      <button
+        className="btn-pronto"
+        onClick={cadastrarProduto}
+      >
+        Adicionar Produto
+      </button>
+
+      <hr />
+
+      {produtos.map(produto => (
+
+        <div
+          key={produto.id}
+          style={{
+            display:'flex',
+            justifyContent:'space-between',
+            alignItems:'center',
+            marginBottom:'10px'
+          }}
+        >
+
+          <span>
+            {produto.nome} - R$ {Number(produto.preco).toFixed(2)}
+          </span>
+
+          <button
+            onClick={() => excluirProduto(produto.id)}
+          >
+            Excluir
+          </button>
+
+        </div>
+
+      ))}
+
+    </div>
+
+  </div>
+</>
+
+);
+}
+// ─── TELA MOTOBOY ──────────────────────────────────────────────
+function TelaMotoboy({ user, token, onLogout, showToast }) {
+
+const [pedidos, setPedidos] = React.useState([]);
+
+async function carregar() {
+const p = await api('/pedidos', 'GET', null, token);
+setPedidos(p);
+}
+
+React.useEffect(() => {
+carregar();
+
+const intervalo = setInterval(carregar, 5000);
+
+return () => clearInterval(intervalo);
+
+}, []);
+
+async function entregar(id) {
+try {
+await api(`/pedidos/${id}/status?status=entregue`, 'PATCH', null, token);
+
+  showToast('✅ Pedido entregue!');
+
+  carregar();
+} catch {
+  showToast('Erro ao finalizar entrega');
+}
+
+}
+
+return (
+  <>
+    <div className="header">
+      <div>
+        <div className="header-brand">
+          Entregas
+        </div>
+
+        <div className="header-sub">
+          Motoboy: {user.nome}
+        </div>
+      </div>
+
+      <button className="btn-sair" onClick={onLogout}>
+        Sair
+      </button>
+    </div>
+
+    <div className="page">
+
+  <div className="section-title">
+    Pedidos para Entrega
+  </div>
+
+  {pedidos
+    .filter(p => p.status === 'em_rota')
+    .map(p => (
+
+      <div className="pedido-card" key={p.id}>
+
+        <div className="pedido-header">
+          <h3>Pedido #{p.id}</h3>
+        </div>
+
+        <div className="pedido-detalhes">
+          {p.tamanho} · R$ {Number(p.total).toFixed(2)}
+        </div>
+
+        <button
+          className="btn-pronto"
+          onClick={() => entregar(p.id)}
+        >
+          Marcar como entregue
+        </button>
+
+      </div>
+
+    ))}
+</div>
+
+</>
+);
+}
+// ─── APP ROOT ──────────────────────────────────────────────
+function App() {
+  const [auth, setAuth] = React.useState(() => {
+  const salvo = localStorage.getItem('auth');
+  return salvo ? JSON.parse(salvo) : null;
+});
+  const [toast, setToast] = React.useState('');
+
+  function showToast(msg) {
+    setToast(msg);
+    setTimeout(() => setToast(''), 3000);
+  }
+
+  function onLogin(data) { setAuth(data); }
+  function onLogout() {
+  localStorage.removeItem('auth');
+  setAuth(null);
+}
+
+  if (!auth) return <LoginPage onLogin={onLogin} />;
+
+  const perfil = auth.perfil?.toLowerCase();
+  const props = { user: auth, token: auth.token, onLogout, showToast };
+
+  return (
+  <>
+  {perfil === 'cliente' && <TelaCliente {...props} />}
+  {perfil === 'preparador' && <TelaPreparadora {...props} />}
+  {perfil === 'administrador' && <TelaDono {...props} />}
+  {perfil === 'motoboy' && <TelaMotoboy {...props} />}    
+    <Toast msg={toast} />
+  </>
+);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
